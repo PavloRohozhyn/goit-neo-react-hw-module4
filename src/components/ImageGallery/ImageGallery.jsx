@@ -1,17 +1,17 @@
 import React from "react";
-import Contact from "../Contact/Contact";
-import css from "./ContactList.module.css";
+import ImageCard from "../ImageCard/ImageCard";
+import css from "./ImageGallery.module.css";
 
-const ContactList = ({ data, fn }) => {
+const ImageGallery = ({ imgs, fn }) => {
   return (
     <ul className={css.contactlist}>
-      {data.map((el) => (
+      {imgs.map((el) => (
         <li key={el.id} className={css.contactListItem}>
-          <Contact fn={fn} data={el} />
+          <ImageCard data={el} fn={fn} />
         </li>
       ))}
     </ul>
   );
 };
 
-export default ContactList;
+export default ImageGallery;

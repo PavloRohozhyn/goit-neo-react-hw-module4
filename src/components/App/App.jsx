@@ -1,57 +1,82 @@
 import { useState, useEffect } from "react";
+
 import { getImageGalleryData } from "../../api/api";
 import SearchBar from "../SearchBar/SearchBar";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
-// import ContactForm from "../../components/ContactForm/ContactForm";
-// import ContactList from "../../components/ContactList/ContactList";
+import ImageGallery from "../ImageGallery/ImageGallery";
+import ImageModal from "../ImageModal/ImageModal";
 
 import "./App.css";
 
 function App() {
-  const [hits, setHits] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(0); // query search data
+  const [hits, setHits] = useState([]); // images data
+  const [isLoading, setIsLoading] = useState(false); // loader
+  const [error, setError] = useState(false); // errors
   const [errorMessage, setErrorMessage] = useState("");
-  const [searchQuery, setSearchQuery] = useState(0);
+  const [page, setPage] = useState(0); // pagination
+  const [modalOpenFlag, setModalOpenFlag] = useState(false); // modal
+  const [modalImgSelected, setModalImgSelected] = useState(null);
 
-  // useEffect(() => {
-  //   const fetching = async () => {
-  //     const data = getImageGalleryData();
-  //     setHits(data.hits);
-  //   };
-  //   fetching();
-  // });
+  const modalOpen = (img) => {
+    setModalImgSelected(img);
+    setModalOpenFlag(true);
+  };
 
-  const handleSearchBar = async (v, e) => {
-    try {
-      setIsLoading(true);
-      setError(false);
-      setHits([]);
-      const data = await getImageGalleryData(v);
-      setHits(data.hits);
-    } catch (err) {
-      setError(true);
-      setErrorMessage(err);
-      console.log("error message", err);
-    } finally {
-      setIsLoading(false);
-    }
+  const modalClose = () => {
+    setModalOpenFlag(false);
+    setModalImgSelected(null);
+  };
+
+  const handleLoadMore = () => {
+    console.log("load more click");
+    setPage(page + 1);
+  }; // load more btn handler
+
+  useEffect(() => {
+    if (!searchQuery) return; // disable onload search
+    const fetching = async () => {
+      try {
+        setIsLoading(true);
+        setError(false);
+        const { data } = await getImageGalleryData(searchQuery, page);
+
+        setHits((prev) => {
+          return page === 1 ? data : [...prev, ...data];
+        });
+      } catch (err) {
+        setError(true);
+        setErrorMessage(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetching();
+  }, [page, searchQuery]); // api call
+
+  const handleSearchBar = async (searchQuery) => {
+    setSearchQuery(searchQuery);
+    setPage(1); // all time its new search query
     // e.resetForm();
-  };
-
-  const handleLoadMore = (event) => {
-    console.log(event);
-  };
+  }; // search form handler
 
   return (
     <>
-      <SearchBar fn={handleSearchBar} isDisabled={isLoading} />
+      <SearchBar onSubmit={handleSearchBar} />
+      {hits && <ImageGallery imgs={hits} fn={modalOpen} />}
       {isLoading && <Loader />}
       {error && <ErrorMessage msg={errorMessage} />}
-      <ul>{hits && hits.map((el) => <li key={1}>{console.log(el)}</li>)}</ul>
-      {hits > 0 && <LoadMoreBtn fn={handleLoadMore} />}
+      {hits && hits.length > 0 && <LoadMoreBtn fn={handleLoadMore} />}
+      {/* images render */}
+      {modalImgSelected && (
+        <ImageModal
+          modalOpenFlag={modalOpenFlag}
+          modalCloseFn={modalClose}
+          modalImgSelected={modalImgSelected}
+        />
+      )}
     </>
   );
 }

@@ -1,29 +1,15 @@
 import React from "react";
-import { FaPhone } from "react-icons/fa";
-import { FaUser } from "react-icons/fa";
-import css from "./Contact.module.css";
+import css from "./ImageCard.module.css";
 
-const Contact = ({ fn, data }) => {
-  const { id, name, number } = data;
+const imageCard = ({ data, fn }) => {
+  const { urls, alt_description } = data;
   return (
     <div className={css.container}>
-      <div className={css.right}>
-        <div>
-          <FaUser />
-          &#160;
-          <span>{name}</span>
-        </div>
-        <div>
-          <FaPhone />
-          &#160;
-          <span>{number}</span>
-        </div>
-      </div>
-      <div className={css.left}>
-        <button onClick={() => fn(id)}>Delete</button>
+      <div className={css.card}>
+        <img src={urls.small} alt={alt_description} onClick={() => fn(data)} />
       </div>
     </div>
   );
 };
 
-export default Contact;
+export default imageCard;

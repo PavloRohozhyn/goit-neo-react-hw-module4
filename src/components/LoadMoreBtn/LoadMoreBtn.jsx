@@ -1,8 +1,8 @@
-const LoadMoreBtn = (fn) => {
+const LoadMoreBtn = ({ fn }) => {
   return (
-    <>
-      <button onClich={fn}>Load More</button>
-    </>
+    <div>
+      <button onClick={() => fn("test")}>Load More</button>
+    </div>
   );
 };
 export default LoadMoreBtn;

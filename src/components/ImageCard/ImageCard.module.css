@@ -4,13 +4,5 @@
   align-items: center;
 }
 
-.right {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  gap: 5px;
-}
-
-.left {
-  padding-left: 25px;
+.card {
 }

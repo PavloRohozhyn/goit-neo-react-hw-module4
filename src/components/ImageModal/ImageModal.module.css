@@ -1,0 +1,30 @@
+.ModalWindow {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 800px;
+  background: white;
+  padding: 20px;
+  box-shadow: 0 5px 15px rgba(26, 25, 25, 0.3);
+  z-index: 999;
+}
+
+.ModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(45, 44, 44, 0.5);
+  z-index: 998;
+}
+
+.ModalImage {
+  object-fit: contain;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: 90vh;
+}

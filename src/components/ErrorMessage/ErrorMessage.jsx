@@ -1,7 +1,13 @@
-const ErrorMessage = ({ msg }) => {
+import toast from "react-hot-toast";
+
+const ErrorMessage = ({ msg, type }) => {
   return (
     <>
-      <p>`Error !!!!!!!!!!!!!!!!!! (${msg})` </p>
+      {type === "error"
+        ? toast.error(msg)
+        : type === "success"
+        ? toast.success(msg)
+        : null}
     </>
   );
 };
