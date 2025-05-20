@@ -1,8 +1,12 @@
+import css from "./LoadMoreBtn.module.css";
+
 const LoadMoreBtn = ({ fn }) => {
   return (
-    <div>
-      <button onClick={() => fn("test")}>Load More</button>
-    </div>
+    <>
+      <button className={css.btn} onClick={() => fn()}>
+        Load More
+      </button>
+    </>
   );
 };
 export default LoadMoreBtn;

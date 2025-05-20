@@ -6,7 +6,13 @@ const imageCard = ({ data, fn }) => {
   return (
     <div className={css.container}>
       <div className={css.card}>
-        <img src={urls.small} alt={alt_description} onClick={() => fn(data)} />
+        <img
+          src={urls.small}
+          alt={alt_description}
+          onClick={() => fn(data)}
+          width="360px"
+          height="300px"
+        />
       </div>
     </div>
   );

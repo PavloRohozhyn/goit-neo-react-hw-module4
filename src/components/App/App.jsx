@@ -1,14 +1,20 @@
 import { useState, useEffect } from "react";
+import { PulseLoader } from "react-spinners";
 
 import { getImageGalleryData } from "../../api/api";
 import SearchBar from "../SearchBar/SearchBar";
-import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
 import ImageGallery from "../ImageGallery/ImageGallery";
 import ImageModal from "../ImageModal/ImageModal";
 
-import "./App.css";
+// import css from "./App.module.css";
+
+const cssOverride = {
+  display: "block",
+  margin: "0 auto",
+  width: "5%",
+};
 
 function App() {
   const [searchQuery, setSearchQuery] = useState(0); // query search data
@@ -64,10 +70,21 @@ function App() {
 
   return (
     <>
+      {/* search box */}
       <SearchBar onSubmit={handleSearchBar} />
-      {hits && <ImageGallery imgs={hits} fn={modalOpen} />}
-      {isLoading && <Loader />}
-      {error && <ErrorMessage msg={errorMessage} />}
+      {/* loader */}
+      <PulseLoader
+        loading={isLoading}
+        cssOverride={cssOverride}
+        color="#405cf5"
+      />
+      {/* errors  OR images*/}
+      {error ? (
+        <ErrorMessage msg={errorMessage} />
+      ) : (
+        hits && <ImageGallery imgs={hits} fn={modalOpen} />
+      )}
+      {/* load more btn */}
       {hits && hits.length > 0 && <LoadMoreBtn fn={handleLoadMore} />}
       {/* images render */}
       {modalImgSelected && (
