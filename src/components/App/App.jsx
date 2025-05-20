@@ -17,12 +17,13 @@ const cssOverride = {
 };
 
 function App() {
-  const [searchQuery, setSearchQuery] = useState(0); // query search data
+  const [searchQuery, setSearchQuery] = useState(""); // query search data
   const [hits, setHits] = useState([]); // images data
   const [isLoading, setIsLoading] = useState(false); // loader
   const [error, setError] = useState(false); // errors
   const [errorMessage, setErrorMessage] = useState("");
-  const [page, setPage] = useState(0); // pagination
+  const [page, setPage] = useState(1); // pagination
+  const [maxPage, setMaxPage] = useState(1); // pagination
   const [modalOpenFlag, setModalOpenFlag] = useState(false); // modal
   const [modalImgSelected, setModalImgSelected] = useState(null);
 
@@ -37,9 +38,15 @@ function App() {
   };
 
   const handleLoadMore = () => {
-    console.log("load more click");
     setPage(page + 1);
   }; // load more btn handler
+
+  const handleSearchBar = (searchQuery) => {
+    setSearchQuery(searchQuery);
+    setPage(1); // all time its new search query
+    setMaxPage(1); // pagination, max pages
+    // e.resetForm();
+  }; // search form handler
 
   useEffect(() => {
     if (!searchQuery) return; // disable onload search
@@ -48,12 +55,13 @@ function App() {
         setIsLoading(true);
         setError(false);
         const { data } = await getImageGalleryData(searchQuery, page);
-
         setHits((prev) => {
-          return page === 1 ? data : [...prev, ...data];
+          return page === 1 ? data.results : [...prev, ...data.results];
         });
+        setMaxPage(data.total_pages);
       } catch (err) {
         setError(true);
+        setHits([]);
         setErrorMessage(err);
       } finally {
         setIsLoading(false);
@@ -61,12 +69,6 @@ function App() {
     };
     fetching();
   }, [page, searchQuery]); // api call
-
-  const handleSearchBar = async (searchQuery) => {
-    setSearchQuery(searchQuery);
-    setPage(1); // all time its new search query
-    // e.resetForm();
-  }; // search form handler
 
   return (
     <>
@@ -85,7 +87,7 @@ function App() {
         hits && <ImageGallery imgs={hits} fn={modalOpen} />
       )}
       {/* load more btn */}
-      {hits && hits.length > 0 && <LoadMoreBtn fn={handleLoadMore} />}
+      {page < maxPage && <LoadMoreBtn fn={handleLoadMore} />}
       {/* images render */}
       {modalImgSelected && (
         <ImageModal
